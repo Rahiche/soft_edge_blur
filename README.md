@@ -2,6 +2,9 @@
 
 A Flutter widget that applies a soft, blurred edge effect to its child widget. This package allows you to easily add a subtle, fading blur effect to the top and/or bottom edges of any widget, creating a smooth transition between content and background.
 
+<img width="547" alt="Screenshot 2024-09-10 at 23 04 14" src="https://github.com/user-attachments/assets/ba58e8a7-a499-46b0-8f41-6eb74dfb8738">
+
+
 ## Getting Started
 
 To use this package, add `soft_edge_blur` as a dependency in your `pubspec.yaml` file.
@@ -50,4 +53,10 @@ Each `EdgeBlur` object takes three parameters:
 ## Demo
 
 Check out this video to see `SoftEdgeBlur` in action:
+
+
+
+
+https://github.com/user-attachments/assets/e42d79ab-657d-4a1b-90be-5fbd44f1a957
+
 
