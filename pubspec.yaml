@@ -1,6 +1,6 @@
 name: soft_edge_blur
 description: "A customizable Flutter widget that applies a soft blur effect to one or more edges of its child widget."
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/Rahiche/soft_edge_blur
 
 environment:

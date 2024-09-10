@@ -1,3 +1,5 @@
-## 0.0.1
+## 0.0.3
+* add image and video demo.
 
-* TODO: Describe initial release.
+## 0.0.1
+* initial release.
