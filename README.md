@@ -8,7 +8,16 @@ A Flutter package that provides a customizable soft edge blur effect for widgets
 
 <img width="547" alt="Map blurred" src="https://i.imgur.com/7DcixDz.png">
 
-## Example 
+
+ # Example video
+
+
+https://github.com/user-attachments/assets/3a708b6d-5ed0-4717-a3c7-313c4ed7e2b6
+
+
+
+
+## Example images
 | ![](https://i.imgur.com/ZHTocas.png) | ![](https://i.imgur.com/ejYRoGu.png) |
 |--------------------------------------|--------------------------------------|
 | ![](https://i.imgur.com/2B4RJo2.png) | ![](https://i.imgur.com/lrVGtHU.png) |
