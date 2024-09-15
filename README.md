@@ -1,24 +1,14 @@
  # SoftEdgeBlur
 
-A Flutter widget that applies a soft, blurred edge effect to its child widget. This package allows you to easily add a subtle, fading blur effect to the top and/or bottom edges of any widget, creating a smooth transition between content and background.
+A Flutter package that provides a customizable soft edge blur effect for widgets.
 
-<img width="547" alt="Screenshot 2024-09-10 at 23 04 14" src="https://github.com/user-attachments/assets/ba58e8a7-a499-46b0-8f41-6eb74dfb8738">
+<img width="547" alt="Map blurred" src="https://i.imgur.com/7DcixDz.png">
 
+## Example 
+| ![](https://i.imgur.com/ZHTocas.png) | ![](https://i.imgur.com/ejYRoGu.png) |
+|--------------------------------------|--------------------------------------|
+| ![](https://i.imgur.com/2B4RJo2.png) | ![](https://i.imgur.com/lrVGtHU.png) |
 
-## Getting Started
-
-To use this package, add `soft_edge_blur` as a dependency in your `pubspec.yaml` file.
-
-```yaml
-dependencies:
-  soft_edge_blur: 
-```
-
-Then, run:
-
-```
-flutter pub get
-```
 
 ## Usage
 
@@ -33,22 +23,63 @@ Wrap any widget with `SoftEdgeBlur` to apply the blur effect:
 ```dart
 SoftEdgeBlur(
   edges: [
-    EdgeBlur(EdgeType.topEdge, 20, 3),
+    EdgeBlur(
+      EdgeType.topEdge,
+      100.0, // Edge Size
+      20.0, // Blur Sigma
+      controlPoints: [
+        ControlPoint(position: 0.5, type: ControlPointType.visible),
+        ControlPoint(position: 1.0, type: ControlPointType.transparent),
+      ],
+    ),
   ],
   child: YourWidget(),
 )
 ```
 
-### Parameters
+## Customization
 
-- `edges`: A list of `EdgeBlur` objects defining which edges to blur and their properties.
-- `child`: The widget to which the blur effect will be applied.
+You can customize the following properties for each edge:
 
-Each `EdgeBlur` object takes three parameters:
-1. `EdgeType`: Either `EdgeType.topEdge` or `EdgeType.bottomEdge`
-2. `size`: The size of the blurred area in logical pixels
-3. `sigma`: The intensity of the blur effect
+### Edge Type
 
+Specify which edges to apply the blur effect:
+
+- `EdgeType.topEdge`
+- `EdgeType.bottomEdge`
+- `EdgeType.leftEdge`
+- `EdgeType.rightEdge`
+
+You can apply blur to multiple edges simultaneously.
+
+### Edge Size
+
+Set the size of the blurred area. This determines how far the blur effect extends from the edge of the widget.
+
+### Blur Sigma
+
+Adjust the intensity of the blur effect.
+
+### Control Points
+
+Define points to control the blur gradient along the edge. Each control point has two properties:
+
+- `position`: A value between 0.0 and 1.0, representing the position along the edge.
+- `type`: Either `ControlPointType.visible` or `ControlPointType.transparent`.
+
+
+### Example Configuration
+
+```dart
+EdgeBlur(
+  EdgeType.topEdge,
+  100.0, // Edge Size
+  20.0, // Blur Sigma
+  controlPoints: [
+    ControlPoint(position: 0.5, type: ControlPointType.visible),
+    ControlPoint(position: 1.0, type: ControlPointType.transparent),
+  ],
+),
 
 ## Demo
 
