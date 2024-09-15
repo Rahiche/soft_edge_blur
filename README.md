@@ -1,4 +1,8 @@
+
+ 
  # SoftEdgeBlur
+[![pub package](https://img.shields.io/pub/v/soft_edge_blur.svg)](https://pub.dev/packages/soft_edge_blur)
+
 
 A Flutter package that provides a customizable soft edge blur effect for widgets.
 
