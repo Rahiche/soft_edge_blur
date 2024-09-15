@@ -80,3 +80,8 @@ EdgeBlur(
     ControlPoint(position: 1.0, type: ControlPointType.transparent),
   ],
 ),
+
+
+### Try it live here
+
+https://soft_edge_blur.codemagic.app/
