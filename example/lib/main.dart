@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:soft_edge_blur/soft_edge_blur.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SoftEdgeBlur Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.dark(),
       home: const HomePage(),
     );
   }
@@ -28,127 +28,262 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  EdgeType _selectedEdge = EdgeType.topEdge;
+  final Set<EdgeType> _selectedEdges = {EdgeType.topEdge};
   double _edgeSize = 100.0;
-  double _blurSigma = 10.0;
-  bool _isVerticalList = true;
+  double _blurSigma = 20.0;
+
+  final List<ControlPoint> _controlPoints = [
+    ControlPoint(position: 0.0, type: ControlPointType.visible),
+    ControlPoint(position: 1.0, type: ControlPointType.transparent),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    // Adjust control points for Right and Bottom edges
+    Map<EdgeType, List<ControlPoint>> controlPointsPerEdge = {};
+
+    for (var edge in _selectedEdges) {
+      List<ControlPoint> controlPointsToUse = _controlPoints;
+      if (edge == EdgeType.rightEdge || edge == EdgeType.bottomEdge) {
+        controlPointsToUse = _controlPoints.map((cp) {
+          return ControlPoint(
+            position: 1.0 - cp.position,
+            type: cp.type,
+          );
+        }).toList();
+      }
+      controlPointsPerEdge[edge] = controlPointsToUse;
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SoftEdgeBlur Demo'),
-      ),
-      body: Column(
+      body: Row(
         children: [
           Expanded(
-            child: Center(
-              child: SoftEdgeBlur(
-                edges: [
-                  EdgeBlur(_selectedEdge, _edgeSize, _blurSigma),
-                ],
-                child: _isVerticalList
-                    ? _buildVerticalImageList()
-                    : _buildHorizontalAvatarList(),
-              ),
+            child: SoftEdgeBlur(
+              edges: _selectedEdges.map((edge) {
+                return EdgeBlur(
+                  edge,
+                  _edgeSize,
+                  _blurSigma,
+                  controlPoints: controlPointsPerEdge[edge]!,
+                );
+              }).toList(),
+              child: _buildMap(),
             ),
           ),
-          _buildControls(),
+          Expanded(child: _buildControls()),
         ],
       ),
     );
   }
 
-  Widget _buildVerticalImageList() {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return Image.network(
-          'https://picsum.photos/seed/${index + 1}/1600/800',
-          height: 200,
-          fit: BoxFit.cover,
-        );
-      },
+  FlutterMap _buildMap() {
+    return FlutterMap(
+      options: MapOptions(
+        initialCenter: const LatLng(51.5, -0.09),
+        initialZoom: 18,
+        cameraConstraint: CameraConstraint.contain(
+          bounds: LatLngBounds(
+            const LatLng(-90, -180),
+            const LatLng(90, 180),
+          ),
+        ),
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+          tileBuilder: darkModeTileBuilder,
+        ),
+        RichAttributionWidget(
+          popupInitialDisplayDuration: const Duration(seconds: 5),
+          animationConfig: const ScaleRAWA(),
+          showFlutterMapAttribution: false,
+          attributions: [
+            TextSourceAttribution(
+              'OpenStreetMap contributors',
+              onTap: () {},
+            ),
+            const TextSourceAttribution(
+              'This attribution is the same throughout this app, except '
+              'where otherwise specified',
+              prependCopyright: false,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
-  Widget _buildHorizontalAvatarList() {
-    return SizedBox(
-      height: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(
-                'https://picsum.photos/seed/${index + 1}/900/900',
+  Widget _buildControlPointControl(int index, ControlPoint cp) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Control Point ${index + 1}'),
+        Row(
+          children: [
+            Expanded(
+              child: Slider(
+                value: cp.position,
+                min: 0.0,
+                max: 1.0,
+                divisions: 100,
+                label: cp.position.toStringAsFixed(2),
+                onChanged: (double value) {
+                  setState(() {
+                    cp.position = value;
+                    _controlPoints
+                        .sort((a, b) => a.position.compareTo(b.position));
+                  });
+                },
               ),
             ),
-          );
-        },
-      ),
+            DropdownButton<ControlPointType>(
+              value: cp.type,
+              items: ControlPointType.values.map((ControlPointType type) {
+                return DropdownMenuItem<ControlPointType>(
+                  value: type,
+                  child: Text(type == ControlPointType.visible
+                      ? 'Visible'
+                      : 'Transparent'),
+                );
+              }).toList(),
+              onChanged: (ControlPointType? newValue) {
+                setState(() {
+                  cp.type = newValue!;
+                });
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                setState(() {
+                  _controlPoints.removeAt(index);
+                });
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 
   Widget _buildControls() {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Radio<EdgeType>(
-                value: EdgeType.topEdge,
-                groupValue: _selectedEdge,
-                onChanged: (EdgeType? value) {
-                  setState(() {
-                    _selectedEdge = value!;
-                  });
-                },
-              ),
-              const Text('Top'),
-              Radio<EdgeType>(
-                value: EdgeType.bottomEdge,
-                groupValue: _selectedEdge,
-                onChanged: (EdgeType? value) {
-                  setState(() {
-                    _selectedEdge = value!;
-                  });
-                },
-              ),
-              const Text('bottom'),
-            ],
-          ),
-          Text('Edge Size: ${_edgeSize.round()}'),
-          Slider(
-            value: _edgeSize,
-            min: 0,
-            max: 200,
-            divisions: 20,
-            label: _edgeSize.round().toString(),
-            onChanged: (double value) {
-              setState(() {
-                _edgeSize = value;
-              });
-            },
-          ),
-          Text('Blur Sigma: ${_blurSigma.toStringAsFixed(1)}'),
-          Slider(
-            value: _blurSigma,
-            min: 0,
-            max: 20,
-            divisions: 40,
-            label: _blurSigma.toStringAsFixed(1),
-            onChanged: (double value) {
-              setState(() {
-                _blurSigma = value;
-              });
-            },
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Checkbox(
+                  value: _selectedEdges.contains(EdgeType.topEdge),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value == true) {
+                        _selectedEdges.add(EdgeType.topEdge);
+                      } else {
+                        _selectedEdges.remove(EdgeType.topEdge);
+                      }
+                    });
+                  },
+                ),
+                const Text('Top'),
+                Checkbox(
+                  value: _selectedEdges.contains(EdgeType.bottomEdge),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value == true) {
+                        _selectedEdges.add(EdgeType.bottomEdge);
+                      } else {
+                        _selectedEdges.remove(EdgeType.bottomEdge);
+                      }
+                    });
+                  },
+                ),
+                const Text('Bottom'),
+                Checkbox(
+                  value: _selectedEdges.contains(EdgeType.leftEdge),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value == true) {
+                        _selectedEdges.add(EdgeType.leftEdge);
+                      } else {
+                        _selectedEdges.remove(EdgeType.leftEdge);
+                      }
+                    });
+                  },
+                ),
+                const Text('Left'),
+                Checkbox(
+                  value: _selectedEdges.contains(EdgeType.rightEdge),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value == true) {
+                        _selectedEdges.add(EdgeType.rightEdge);
+                      } else {
+                        _selectedEdges.remove(EdgeType.rightEdge);
+                      }
+                    });
+                  },
+                ),
+                const Text('Right'),
+              ],
+            ),
+            Text('Edge Size: ${_edgeSize.round()}'),
+            Slider(
+              value: _edgeSize,
+              min: 0,
+              max: 200,
+              divisions: 20,
+              label: _edgeSize.round().toString(),
+              onChanged: (double value) {
+                setState(() {
+                  _edgeSize = value;
+                });
+              },
+            ),
+            Text('Blur Sigma: ${_blurSigma.toStringAsFixed(1)}'),
+            Slider(
+              value: _blurSigma,
+              min: 0,
+              max: 40,
+              divisions: 40,
+              label: _blurSigma.toStringAsFixed(1),
+              onChanged: (double value) {
+                setState(() {
+                  _blurSigma = value;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            const Text('Control Points:'),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...List.generate(_controlPoints.length, (index) {
+                  return _buildControlPointControl(
+                      index, _controlPoints[index]);
+                }),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _controlPoints.add(
+                        ControlPoint(
+                          position: 0.5,
+                          type: ControlPointType.visible,
+                        ),
+                      );
+                      _controlPoints
+                          .sort((a, b) => a.position.compareTo(b.position));
+                    });
+                  },
+                  child: const Text('Add Control Point'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

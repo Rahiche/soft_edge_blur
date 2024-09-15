@@ -40,7 +40,7 @@ class _SamplerBuilder extends SingleChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return _RenderAnimatedSamplerWidget(
-      devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+      devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
       builder: builder,
       enabled: enabled,
     );
@@ -50,7 +50,7 @@ class _SamplerBuilder extends SingleChildRenderObjectWidget {
   void updateRenderObject(
       BuildContext context, covariant RenderObject renderObject) {
     (renderObject as _RenderAnimatedSamplerWidget)
-      ..devicePixelRatio = MediaQuery.of(context).devicePixelRatio
+      ..devicePixelRatio = MediaQuery.devicePixelRatioOf(context)
       ..builder = builder
       ..enabled = enabled;
   }
