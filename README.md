@@ -80,14 +80,3 @@ EdgeBlur(
     ControlPoint(position: 1.0, type: ControlPointType.transparent),
   ],
 ),
-
-## Demo
-
-Check out this video to see `SoftEdgeBlur` in action:
-
-
-
-
-https://github.com/user-attachments/assets/e42d79ab-657d-4a1b-90be-5fbd44f1a957
-
-
