@@ -104,12 +104,23 @@ class SoftEdgeBlur extends StatelessWidget {
     final sortedColors = [for (var i in sortedPairs) colors[i]];
 
     // Create linear gradient based on orientation
-    return ui.Gradient.linear(
-      isVertical ? rect.topCenter : rect.centerLeft,
-      isVertical ? rect.bottomCenter : rect.centerRight,
-      sortedColors,
-      sortedPositions,
-    );
+    if ((edge.type == EdgeType.rightEdge) ||
+        (edge.type == EdgeType.bottomEdge)) {
+      // Reverse from/to when we are in the right/bottom edge
+      return ui.Gradient.linear(
+        isVertical ? rect.bottomCenter : rect.centerRight,
+        isVertical ? rect.topCenter : rect.centerLeft,
+        sortedColors,
+        sortedPositions,
+      );
+    } else {
+      return ui.Gradient.linear(
+        isVertical ? rect.topCenter : rect.centerLeft,
+        isVertical ? rect.bottomCenter : rect.centerRight,
+        sortedColors,
+        sortedPositions,
+      );
+    }
   }
 
   Rect _getEdgeRect(EdgeBlur edge, Size size, double devicePixelRatio) {
