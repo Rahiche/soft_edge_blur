@@ -132,8 +132,6 @@ class _HomePageState extends State<HomePage> {
                 onChanged: (double value) {
                   setState(() {
                     cp.position = value;
-                    _controlPoints
-                        .sort((a, b) => a.position.compareTo(b.position));
                   });
                 },
               ),
