@@ -12,9 +12,9 @@ void main() {
           body: SoftEdgeBlur(
             edges: [
               EdgeBlur(
-                EdgeType.topEdge,
-                10.0,
-                5.0,
+                type: EdgeType.topEdge,
+                size: 10.0,
+                sigma: 5.0,
                 controlPoints: [
                   ControlPoint(
                     position: 0.0,
@@ -27,9 +27,9 @@ void main() {
                 ],
               ),
               EdgeBlur(
-                EdgeType.bottomEdge,
-                10.0,
-                5.0,
+                type: EdgeType.bottomEdge,
+                size: 10.0,
+                sigma: 5.0,
                 controlPoints: [
                   ControlPoint(position: 0.0, type: ControlPointType.visible),
                   ControlPoint(
@@ -66,9 +66,9 @@ void main() {
                 body: SoftEdgeBlur(
                   edges: [
                     EdgeBlur(
-                      EdgeType.topEdge,
-                      10.0,
-                      5.0,
+                      type: EdgeType.topEdge,
+                      size: 10.0,
+                      sigma: 5.0,
                       controlPoints: [
                         ControlPoint(
                           position: 0.0,
@@ -81,9 +81,9 @@ void main() {
                       ],
                     ),
                     EdgeBlur(
-                      EdgeType.topEdge, // Duplicate edge type
-                      20.0,
-                      10.0,
+                      type: EdgeType.topEdge, // Duplicate edge type
+                      size: 20.0,
+                      sigma: 10.0,
                       controlPoints: [
                         ControlPoint(
                           position: 0.0,

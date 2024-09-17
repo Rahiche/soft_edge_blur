@@ -4,10 +4,10 @@ import 'edge_type.dart';
 /// Defines the blur effect to be applied on a specific edge.
 class EdgeBlur {
   /// Creates an [EdgeBlur] effect for a specific edge with the given parameters.
-  const EdgeBlur(
-    this.type,
-    this.size,
-    this.sigma, {
+  const EdgeBlur({
+    required this.type,
+    required this.size,
+    required this.sigma,
     required this.controlPoints,
   });
 

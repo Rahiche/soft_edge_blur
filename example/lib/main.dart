@@ -53,9 +53,9 @@ class _HomePageState extends State<HomePage> {
             child: SoftEdgeBlur(
               edges: _selectedEdges.map((edge) {
                 return EdgeBlur(
-                  edge,
-                  _edgeSize,
-                  _blurSigma,
+                  type: edge,
+                  size: _edgeSize,
+                  sigma: _blurSigma,
                   controlPoints: controlPointsPerEdge[edge]!,
                 );
               }).toList(),
