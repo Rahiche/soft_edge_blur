@@ -41,7 +41,7 @@ return SoftEdgeBlur(
   edges: [
     EdgeBlur(
       type: EdgeType.topEdge,
-      size: 1000,
+      size: 100,
       sigma: 30,
       controlPoints: [
         ControlPoint(
