@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'control_point.dart';
 import 'edge_type.dart';
 
@@ -9,6 +11,7 @@ class EdgeBlur {
     required this.size,
     required this.sigma,
     required this.controlPoints,
+    this.tintColor,
   });
 
   /// The edge on which the blur will be applied.
@@ -22,4 +25,7 @@ class EdgeBlur {
 
   /// A list of [ControlPoint] defining the gradient mask.
   final List<ControlPoint> controlPoints;
+
+  /// The tint color to be applied to the blur effect.
+  final Color? tintColor;
 }

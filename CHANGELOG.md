@@ -1,3 +1,8 @@
+## 0.1.1
+* Breaking change: EdgeBlur control now requires the use of named parameters
+* Added support for tint color
+* New Airbnb Card example
+
 ## 0.1.0
 * Multiple edges can now be applied simultaneously
 * re-implemented using a new technique using a single gradient mask and blur operation
