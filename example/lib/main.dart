@@ -43,16 +43,7 @@ class _HomePageState extends State<HomePage> {
     Map<EdgeType, List<ControlPoint>> controlPointsPerEdge = {};
 
     for (var edge in _selectedEdges) {
-      List<ControlPoint> controlPointsToUse = _controlPoints;
-      if (edge == EdgeType.rightEdge || edge == EdgeType.bottomEdge) {
-        controlPointsToUse = _controlPoints.map((cp) {
-          return ControlPoint(
-            position: 1.0 - cp.position,
-            type: cp.type,
-          );
-        }).toList();
-      }
-      controlPointsPerEdge[edge] = controlPointsToUse;
+      controlPointsPerEdge[edge] = _controlPoints;
     }
 
     return Scaffold(
