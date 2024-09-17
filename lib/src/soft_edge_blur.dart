@@ -79,6 +79,15 @@ class SoftEdgeBlur extends StatelessWidget {
 
       canvas.drawImage(image, Offset.zero, blurredPaint);
 
+      // If tintColor is provided, draw the tint over the blurred content
+      if (edge.tintColor != null) {
+        final tintPaint = Paint()
+          ..color = edge.tintColor!
+          ..blendMode = BlendMode.srcOver;
+
+        canvas.drawRect(rect, tintPaint);
+      }
+
       // Apply gradient mask to the blurred image
       canvas.drawRect(rect, gradientPaint);
 
