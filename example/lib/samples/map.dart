@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:soft_edge_blur/soft_edge_blur.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:soft_edge_blur/soft_edge_blur.dart';
 
 class MapApp extends StatelessWidget {
   const MapApp({super.key});
@@ -20,7 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Set<EdgeType> _selectedEdges = {EdgeType.topEdge};
+  Set<EdgeType> _selectedEdges = {EdgeType.topEdge};
   double _edgeSize = 100.0;
   double _blurSigma = 20.0;
 
@@ -35,7 +35,16 @@ class _HomePageState extends State<HomePage> {
     Map<EdgeType, List<ControlPoint>> controlPointsPerEdge = {};
 
     for (var edge in _selectedEdges) {
-      controlPointsPerEdge[edge] = _controlPoints;
+      List<ControlPoint> controlPointsToUse = _controlPoints;
+      if (edge == EdgeType.rightEdge || edge == EdgeType.bottomEdge) {
+        controlPointsToUse = _controlPoints.map((cp) {
+          return ControlPoint(
+            position: 1.0 - cp.position,
+            type: cp.type,
+          );
+        }).toList();
+      }
+      controlPointsPerEdge[edge] = controlPointsToUse;
     }
 
     return Scaffold(
@@ -115,23 +124,21 @@ class _HomePageState extends State<HomePage> {
                 onChanged: (double value) {
                   setState(() {
                     cp.position = value;
+                    _controlPoints.sort((a, b) => a.position.compareTo(b.position));
                   });
                 },
               ),
             ),
-            DropdownButton<ControlPointType>(
-              value: cp.type,
-              items: ControlPointType.values.map((ControlPointType type) {
-                return DropdownMenuItem<ControlPointType>(
-                  value: type,
-                  child: Text(type == ControlPointType.visible
-                      ? 'Visible'
-                      : 'Transparent'),
-                );
-              }).toList(),
-              onChanged: (ControlPointType? newValue) {
+            IconButton(
+              icon: Icon(cp.type == ControlPointType.visible ? Icons.visibility : Icons.visibility_off),
+              onPressed: () {
                 setState(() {
-                  cp.type = newValue!;
+                  _controlPoints.add(
+                    ControlPoint(
+                      position: 0.5,
+                      type: ControlPointType.visible,
+                    ),
+                  );
                 });
               },
             ),
@@ -154,64 +161,45 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Checkbox(
-                  value: _selectedEdges.contains(EdgeType.topEdge),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (value == true) {
-                        _selectedEdges.add(EdgeType.topEdge);
-                      } else {
-                        _selectedEdges.remove(EdgeType.topEdge);
-                      }
-                    });
-                  },
-                ),
-                const Text('Top'),
-                Checkbox(
-                  value: _selectedEdges.contains(EdgeType.bottomEdge),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (value == true) {
-                        _selectedEdges.add(EdgeType.bottomEdge);
-                      } else {
-                        _selectedEdges.remove(EdgeType.bottomEdge);
-                      }
-                    });
-                  },
-                ),
-                const Text('Bottom'),
-                Checkbox(
-                  value: _selectedEdges.contains(EdgeType.leftEdge),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (value == true) {
-                        _selectedEdges.add(EdgeType.leftEdge);
-                      } else {
-                        _selectedEdges.remove(EdgeType.leftEdge);
-                      }
-                    });
-                  },
-                ),
-                const Text('Left'),
-                Checkbox(
-                  value: _selectedEdges.contains(EdgeType.rightEdge),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (value == true) {
-                        _selectedEdges.add(EdgeType.rightEdge);
-                      } else {
-                        _selectedEdges.remove(EdgeType.rightEdge);
-                      }
-                    });
-                  },
-                ),
-                const Text('Right'),
-              ],
+            const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 16),
+            const Text('Blur position'),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton(
+                multiSelectionEnabled: true,
+                selected: _selectedEdges,
+                segments: const [
+                  ButtonSegment(
+                    value: EdgeType.topEdge,
+                    label: Text('Top'),
+                  ),
+                  ButtonSegment(
+                    value: EdgeType.bottomEdge,
+                    label: Text('Bottom'),
+                  ),
+                  ButtonSegment(
+                    value: EdgeType.leftEdge,
+                    label: Text('Left'),
+                  ),
+                  ButtonSegment(
+                    value: EdgeType.rightEdge,
+                    label: Text('Right'),
+                  ),
+                ],
+                onSelectionChanged: (Set<EdgeType> selectedEdges) {
+                  setState(() {
+                    _selectedEdges = selectedEdges;
+                  });
+                },
+              ),
             ),
+            const SizedBox(height: 16),
             Text('Edge Size: ${_edgeSize.round()}'),
+            const SizedBox(height: 8),
             Slider(
               value: _edgeSize,
               min: 0,
@@ -224,7 +212,9 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
+            const SizedBox(height: 8),
             Text('Blur Sigma: ${_blurSigma.toStringAsFixed(1)}'),
+            const SizedBox(height: 8),
             Slider(
               value: _blurSigma,
               min: 0,
@@ -238,13 +228,13 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             const SizedBox(height: 16),
-            const Text('Control Points:'),
+            const Text('Control Points', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ...List.generate(_controlPoints.length, (index) {
-                  return _buildControlPointControl(
-                      index, _controlPoints[index]);
+                  return _buildControlPointControl(index, _controlPoints[index]);
                 }),
                 ElevatedButton(
                   onPressed: () {
@@ -255,8 +245,7 @@ class _HomePageState extends State<HomePage> {
                           type: ControlPointType.visible,
                         ),
                       );
-                      _controlPoints
-                          .sort((a, b) => a.position.compareTo(b.position));
+                      _controlPoints.sort((a, b) => a.position.compareTo(b.position));
                     });
                   },
                   child: const Text('Add Control Point'),
