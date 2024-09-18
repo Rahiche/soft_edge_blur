@@ -46,25 +46,32 @@ class _HomePageState extends State<HomePage> {
       }
       controlPointsPerEdge[edge] = controlPointsToUse;
     }
-
+    var theme = Theme.of(context);
     return Scaffold(
-      body: Row(
-        children: [
-          Expanded(
-            child: SoftEdgeBlur(
-              edges: _selectedEdges.map((edge) {
-                return EdgeBlur(
-                  type: edge,
-                  size: _edgeSize,
-                  sigma: _blurSigma,
-                  controlPoints: controlPointsPerEdge[edge]!,
-                );
-              }).toList(),
-              child: _buildMap(),
-            ),
+      body: Theme(
+        data: theme.copyWith(
+          sliderTheme: SliderThemeData(
+            overlayShape: SliderComponentShape.noThumb,
           ),
-          Expanded(child: _buildControls()),
-        ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: SoftEdgeBlur(
+                edges: _selectedEdges.map((edge) {
+                  return EdgeBlur(
+                    type: edge,
+                    size: _edgeSize,
+                    sigma: _blurSigma,
+                    controlPoints: controlPointsPerEdge[edge]!,
+                  );
+                }).toList(),
+                child: _buildMap(),
+              ),
+            ),
+            Expanded(child: _buildControls()),
+          ],
+        ),
       ),
     );
   }
