@@ -88,11 +88,11 @@ void main() {
                     sigma: 10.0,
                     controlPoints: [
                       ControlPoint(
-                        position: 1.0,
+                        position: 0.5,
                         type: ControlPointType.visible,
                       ),
                       ControlPoint(
-                        position: 0.5,
+                        position: 1.0,
                         type: ControlPointType.transparent,
                       ),
                     ],
@@ -169,11 +169,11 @@ void main() {
                     controlPoints: [
                       ControlPoint(
                         position: 0.5,
-                        type: ControlPointType.transparent,
+                        type: ControlPointType.visible,
                       ),
                       ControlPoint(
                         position: 1.0,
-                        type: ControlPointType.visible,
+                        type: ControlPointType.transparent,
                       ),
                     ],
                   ),
@@ -238,11 +238,11 @@ void main() {
                     sigma: 10.0,
                     controlPoints: [
                       ControlPoint(
-                        position: 1.0,
+                        position: 0.5,
                         type: ControlPointType.visible,
                       ),
                       ControlPoint(
-                        position: 0.5,
+                        position: 1.0,
                         type: ControlPointType.transparent,
                       ),
                     ],
@@ -254,11 +254,11 @@ void main() {
                     controlPoints: [
                       ControlPoint(
                         position: 0.5,
-                        type: ControlPointType.transparent,
+                        type: ControlPointType.visible,
                       ),
                       ControlPoint(
                         position: 1.0,
-                        type: ControlPointType.visible,
+                        type: ControlPointType.transparent,
                       ),
                     ],
                   ),

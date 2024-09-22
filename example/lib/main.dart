@@ -1,3 +1,4 @@
+import 'package:example/samples/music_playlist.dart';
 import 'package:flutter/material.dart';
 import 'package:example/samples/airbnb.dart';
 import 'package:example/samples/map.dart';
@@ -51,6 +52,18 @@ class AppChooserHome extends StatelessWidget {
                 );
               },
               child: const Text('Map App'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MusicPlayerHome(),
+                  ),
+                );
+              },
+              child: const Text('Music Playlist'),
             ),
           ],
         ),

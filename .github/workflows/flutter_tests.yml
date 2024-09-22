@@ -25,8 +25,5 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run Flutter Tests
-        run: flutter test --update-goldens
-
       - name: Run Widget Tests
         run: flutter test test/soft_edge_blur_test.dart
