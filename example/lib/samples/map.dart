@@ -56,14 +56,14 @@ class _HomePageState extends State<HomePage> {
           ? FloatingActionButton(
               onPressed: () {
                 showModalBottomSheet(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor, // Use the default background color
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   context: context,
                   isScrollControlled: true,
                   builder: (BuildContext context) {
                     return Theme(
-                        data: Theme.of(context), // Use the current theme
-
-                        child: _buildControlsSheet());
+                      data: Theme.of(context),
+                      child: _buildControlsSheet(),
+                    );
                   },
                 );
               },
@@ -152,7 +152,7 @@ class ControlsSheet extends StatefulWidget {
   final ValueChanged<Set<EdgeType>> onEdgesChanged;
   final ValueChanged<double> onEdgeSizeChanged;
   final ValueChanged<double> onBlurSigmaChanged;
-  final ValueChanged<List<ControlPoint>> onControlPointsChanged; // Add this callback
+  final ValueChanged<List<ControlPoint>> onControlPointsChanged;
   final VoidCallback onUpdate;
 
   const ControlsSheet({
@@ -164,7 +164,7 @@ class ControlsSheet extends StatefulWidget {
     required this.onEdgesChanged,
     required this.onEdgeSizeChanged,
     required this.onBlurSigmaChanged,
-    required this.onControlPointsChanged, // Include in constructor
+    required this.onControlPointsChanged,
     required this.onUpdate,
   });
 
@@ -201,7 +201,8 @@ class _ControlsSheetState extends State<ControlsSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text('Settings',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               const SizedBox(height: 16),
               const Text('Blur position'),
               const SizedBox(height: 8),
@@ -213,9 +214,12 @@ class _ControlsSheetState extends State<ControlsSheet> {
                   selected: _localSelectedEdges,
                   segments: const [
                     ButtonSegment(value: EdgeType.topEdge, label: Text('Top')),
-                    ButtonSegment(value: EdgeType.bottomEdge, label: Text('Bottom')),
-                    ButtonSegment(value: EdgeType.leftEdge, label: Text('Left')),
-                    ButtonSegment(value: EdgeType.rightEdge, label: Text('Right')),
+                    ButtonSegment(
+                        value: EdgeType.bottomEdge, label: Text('Bottom')),
+                    ButtonSegment(
+                        value: EdgeType.leftEdge, label: Text('Left')),
+                    ButtonSegment(
+                        value: EdgeType.rightEdge, label: Text('Right')),
                   ],
                   onSelectionChanged: (Set<EdgeType> selectedEdges) {
                     setState(() {
@@ -258,7 +262,8 @@ class _ControlsSheetState extends State<ControlsSheet> {
                 },
               ),
               const SizedBox(height: 32),
-              const Text('Control Points', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text('Control Points',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               const SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,7 +275,8 @@ class _ControlsSheetState extends State<ControlsSheet> {
                     onPressed: () {
                       setState(() {
                         _localControlPoints.add(
-                          ControlPoint(position: 0.5, type: ControlPointType.visible),
+                          ControlPoint(
+                              position: 0.5, type: ControlPointType.visible),
                         );
                         widget.onControlPointsChanged(_localControlPoints);
                       });
@@ -304,18 +310,20 @@ class _ControlsSheetState extends State<ControlsSheet> {
                 onChanged: (double value) {
                   setState(() {
                     cp.position = value;
-                    _localControlPoints.sort((a, b) => a.position.compareTo(b.position));
                     widget.onControlPointsChanged(_localControlPoints);
                   });
                 },
               ),
             ),
             IconButton(
-              icon: Icon(cp.type == ControlPointType.visible ? Icons.visibility : Icons.visibility_off),
+              icon: Icon(cp.type == ControlPointType.visible
+                  ? Icons.visibility
+                  : Icons.visibility_off),
               onPressed: () {
                 setState(() {
-                  cp.type =
-                      cp.type == ControlPointType.visible ? ControlPointType.transparent : ControlPointType.visible;
+                  cp.type = cp.type == ControlPointType.visible
+                      ? ControlPointType.transparent
+                      : ControlPointType.visible;
                   widget.onControlPointsChanged(_localControlPoints);
                 });
               },
