@@ -1,3 +1,7 @@
+## 0.1.2
+* Resposnsive and updated map demo thanks to @sgruhier 
+* Added a new music playlist example 
+
 ## 0.1.1
 * Breaking change: EdgeBlur control now requires the use of named parameters
 * Added support for tint color

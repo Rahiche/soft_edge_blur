@@ -9,22 +9,19 @@ A Flutter package that provides a customizable soft progressive blur effect for 
 <img width="547" alt="Map blurred" src="https://i.imgur.com/7DcixDz.png">
 
 
- # Example video
-
-
-https://github.com/user-attachments/assets/3a708b6d-5ed0-4717-a3c7-313c4ed7e2b6
-
-
-
-
-## Example images
-## Control points
+## Demos
+## Map - with control points
 | ![](https://i.imgur.com/ZHTocas.png) | ![](https://i.imgur.com/ejYRoGu.png) |
 |--------------------------------------|--------------------------------------|
 | ![](https://i.imgur.com/2B4RJo2.png) | ![](https://i.imgur.com/lrVGtHU.png) |
 
-## Tint Color
+## Airbnb Card with tint color
+
 <img width="522" alt="Screenshot 2024-09-17 at 22 22 01" src="https://github.com/user-attachments/assets/91155a1d-7552-4e22-922c-402192d46149">
+
+## Music play list with tint color
+
+<img width="522" alt="Screenshot 2024-09-17 at 22 22 01" src="https://i.imgur.com/QjmfnIL.jpeg">
 
 ## Usage
 
