@@ -1,5 +1,6 @@
 
- 
+ ![banner](https://github.com/user-attachments/assets/b69f6970-4ce7-4d93-a8e7-fa7b4a06416e)
+
  # SoftEdgeBlur
 [![pub package](https://img.shields.io/pub/v/soft_edge_blur.svg)](https://pub.dev/packages/soft_edge_blur)
 
