@@ -17,6 +17,7 @@ class Wallpapers extends StatelessWidget {
                 type: EdgeType.topEdge,
                 size: 180,
                 sigma: 280,
+                tileMode: TileMode.mirror,
                 controlPoints: [
                   ControlPoint(
                     position: 0.5,
