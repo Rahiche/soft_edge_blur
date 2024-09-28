@@ -12,6 +12,8 @@ class EdgeBlur {
     required this.sigma,
     required this.controlPoints,
     this.tintColor,
+    this.tileMode =
+        TileMode.clamp, // Add the tileMode parameter with a default value
   });
 
   /// The edge on which the blur will be applied.
@@ -28,4 +30,7 @@ class EdgeBlur {
 
   /// The tint color to be applied to the blur effect.
   final Color? tintColor;
+
+  /// The tile mode to be used in the blur effect.
+  final TileMode tileMode;
 }

@@ -74,7 +74,7 @@ class SoftEdgeBlur extends StatelessWidget {
         ..imageFilter = ui.ImageFilter.blur(
           sigmaX: edge.sigma,
           sigmaY: edge.sigma,
-          tileMode: TileMode.clamp,
+          tileMode: edge.tileMode,
         );
 
       canvas.drawImage(image, Offset.zero, blurredPaint);
