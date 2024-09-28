@@ -1,3 +1,7 @@
+## 0.1.3
+* Added support for custom TileMode per BlurEdge
+* Added a new wallpapers sample
+
 ## 0.1.2
 * Resposnsive and updated map demo thanks to @sgruhier 
 * Added a new music playlist example 
