@@ -24,6 +24,12 @@ A Flutter package that provides a customizable soft progressive blur effect for 
 
 <img width="522" alt="Screenshot 2024-09-17 at 22 22 01" src="https://i.imgur.com/QjmfnIL.jpeg">
 
+
+## Wallpapers grid with tilemode 
+
+<img width="522" alt="Screenshot 2024-09-17 at 22 22 01" src="https://i.imgur.com/M0zS3hG.png">
+
+
 ## Usage
 
 Import the package in your Dart code:
