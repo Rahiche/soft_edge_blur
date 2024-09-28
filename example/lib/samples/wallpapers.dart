@@ -12,7 +12,6 @@ class Wallpapers extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           SoftEdgeBlur(
-            blurOnly: true,
             edges: [
               EdgeBlur(
                 type: EdgeType.topEdge,
