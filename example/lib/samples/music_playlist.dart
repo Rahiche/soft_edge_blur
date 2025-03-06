@@ -48,23 +48,23 @@ class _MusicPlayerHomeState extends State<MusicPlayerHome> {
       backgroundColor: Colors.transparent,
       body: _buildBlurredEdge(),
       extendBody: true,
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(0, 'Songs', Icons.music_note),
-              _buildNavItem(1, 'Artists', Icons.person_2_outlined),
-              _buildNavItem(2, 'Albums', Icons.image_outlined),
-            ],
-          ),
-        ),
-      ),
+      // bottomNavigationBar: Container(
+      //   decoration: const BoxDecoration(
+      //     color: Colors.transparent,
+      //     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      //   ),
+      //   child: Padding(
+      //     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //       children: [
+      //         _buildNavItem(0, 'Songs', Icons.music_note),
+      //         _buildNavItem(1, 'Artists', Icons.person_2_outlined),
+      //         _buildNavItem(2, 'Albums', Icons.image_outlined),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 
@@ -75,7 +75,7 @@ class _MusicPlayerHomeState extends State<MusicPlayerHome> {
           type: EdgeType.bottomEdge,
           size: 200,
           sigma: 30,
-          tintColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
+          // tintColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
           controlPoints: [
             ControlPoint(
               position: 0.4,
@@ -120,13 +120,13 @@ class _MusicPlayerHomeState extends State<MusicPlayerHome> {
             },
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            height: 50,
-          ),
-        )
+        // Align(
+        //   alignment: Alignment.bottomCenter,
+        //   child: Container(
+        //     color: Theme.of(context).scaffoldBackgroundColor,
+        //     height: 50,
+        //   ),
+        // )
       ],
     );
   }

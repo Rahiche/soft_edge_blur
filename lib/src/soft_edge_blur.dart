@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_shaders/flutter_shaders.dart';
 
 import 'animated_sampler.dart';
 import 'control_point_type.dart';
@@ -28,17 +29,85 @@ class SoftEdgeBlur extends StatelessWidget {
 
   /// A list of [EdgeBlur] defining the edges to blur and their configurations.
   final List<EdgeBlur> edges;
+  Stopwatch _stopwatch = Stopwatch();
 
   @override
   Widget build(BuildContext context) {
     return ClipRect(
-      child: AnimatedSampler(
-        (ui.Image image, Size size, Canvas canvas) {
-          _drawCanvas(image, size, canvas, context);
+      child: ShaderBuilder(
+        (context, shader, child) {
+          return AnimatedSampler(
+            (ui.Image image, Size size, Canvas canvas) {
+              _stopwatch.start();
+              _drawCanvasShader(image, size, canvas, shader, context);
+              // _drawCanvasPicture(image, size, canvas, context);
+              // _drawCanvasWithClip(image, size, canvas, context);
+              _stopwatch.stop();
+              print("_stopwatch ${_stopwatch.elapsedMicroseconds}");
+            },
+            child: child!,
+          );
         },
         child: child,
+        assetKey: 'packages/soft_edge_blur/shader/flur.frag',
       ),
     );
+  }
+
+  void _drawCanvasShader(
+    ui.Image image,
+    Size size,
+    Canvas canvas,
+    ui.FragmentShader shader,
+    BuildContext context,
+  ) {
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    canvas.scale(1 / devicePixelRatio);
+
+    // Draw the original image without blur
+    canvas.drawImage(image, Offset.zero, Paint());
+
+    for (final edge in edges) {
+      final rect = _getEdgeRect(edge, size, devicePixelRatio);
+      final isVertical =
+          edge.type == EdgeType.topEdge || edge.type == EdgeType.bottomEdge;
+
+      // Create gradient shader
+      final gradient = _createGradient(edge, rect, isVertical);
+
+      // Prepare the gradient paint with blend mode
+      final gradientPaint = Paint()
+        ..shader = gradient
+        ..blendMode = BlendMode.dstIn;
+
+      // Save the current canvas state
+      canvas.saveLayer(rect, Paint());
+
+      // Draw the blurred image within the rect
+      final blurredPaint = Paint();
+      shader.setFloat(0, size.width * devicePixelRatio);
+      shader.setFloat(1, size.height * devicePixelRatio);
+      shader.setImageSampler(0, image);
+      blurredPaint.shader = shader;
+
+      // canvas.drawImage(image, Offset.zero, blurredPaint);
+      canvas.drawRect(rect, blurredPaint);
+
+      // If tintColor is provided, draw the tint over the blurred content
+      // if (edge.tintColor != null) {
+      //   final tintPaint = Paint()
+      //     ..color = edge.tintColor!
+      //     ..blendMode = BlendMode.srcOver;
+      //
+      //   canvas.drawRect(rect, tintPaint);
+      // }
+
+      // Apply gradient mask to the blurred image
+      // canvas.drawRect(rect, gradientPaint);
+
+      // Restore canvas state
+      canvas.restore();
+    }
   }
 
   void _drawCanvas(
@@ -92,6 +161,122 @@ class SoftEdgeBlur extends StatelessWidget {
       canvas.drawRect(rect, gradientPaint);
 
       // Restore canvas state
+      canvas.restore();
+    }
+  }
+
+  void _drawCanvasPicture(
+      ui.Image image, Size size, Canvas canvas, BuildContext context) {
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    canvas.scale(1 / devicePixelRatio);
+
+    // Draw the original image without blur
+    canvas.drawImage(image, Offset.zero, Paint());
+
+    for (final edge in edges) {
+      final rect = _getEdgeRect(edge, size, devicePixelRatio);
+      final isVertical =
+          edge.type == EdgeType.topEdge || edge.type == EdgeType.bottomEdge;
+
+      // Create gradient shader
+      final gradient = _createGradient(edge, rect, isVertical);
+
+      // Create a separate canvas for the blurred and tinted content
+      final pictureRecorder = ui.PictureRecorder();
+      final blurCanvas = Canvas(pictureRecorder);
+      final blurRect = Rect.fromLTWH(0, 0, rect.width, rect.height);
+
+      // Draw the blurred image
+      final blurredPaint = Paint()
+        ..imageFilter = ui.ImageFilter.blur(
+          sigmaX: edge.sigma,
+          sigmaY: edge.sigma,
+          tileMode: edge.tileMode,
+        );
+      blurCanvas.drawImageRect(
+        image,
+        rect,
+        blurRect,
+        blurredPaint,
+      );
+
+      // If tintColor is provided, draw the tint over the blurred content
+      if (edge.tintColor != null) {
+        final tintPaint = Paint()
+          ..color = edge.tintColor!
+          ..blendMode = BlendMode.srcOver;
+        blurCanvas.drawRect(blurRect, tintPaint);
+      }
+
+      // Create an image from the blurred and tinted content
+      final picture = pictureRecorder.endRecording();
+      final blurredImage = picture.toImageSync(
+        rect.width.toInt(),
+        rect.height.toInt(),
+      );
+
+      // Draw the blurred and tinted image with the gradient mask
+      final gradientPaint = Paint()
+        ..shader = gradient
+        ..blendMode = BlendMode.dstIn;
+
+      canvas.saveLayer(rect, Paint());
+      canvas.drawImage(blurredImage, rect.topLeft, Paint());
+      canvas.drawRect(rect, gradientPaint);
+      canvas.restore();
+    }
+  }
+
+  void _drawCanvasWithClip(
+    ui.Image image,
+    Size size,
+    Canvas canvas,
+    BuildContext context,
+  ) {
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    canvas.scale(1 / devicePixelRatio);
+
+    // Draw the original image without blur
+    canvas.drawImage(image, Offset.zero, Paint());
+
+    for (final edge in edges) {
+      final rect = _getEdgeRect(edge, size, devicePixelRatio);
+      final isVertical =
+          edge.type == EdgeType.topEdge || edge.type == EdgeType.bottomEdge;
+
+      // Create gradient shader
+      final gradient = _createGradient(edge, rect, isVertical);
+
+      // Prepare the gradient paint with blend mode
+      final gradientPaint = Paint()
+        ..shader = gradient
+        ..blendMode = BlendMode.dstIn;
+
+      // Clip the canvas to the rect to limit the drawing area
+      canvas.save();
+      canvas.clipRect(rect);
+
+      // Draw the blurred image within the rect
+      final blurredPaint = Paint()
+        ..imageFilter = ui.ImageFilter.blur(
+          sigmaX: edge.sigma,
+          sigmaY: edge.sigma,
+          tileMode: edge.tileMode,
+        );
+      canvas.drawImage(image, Offset.zero, blurredPaint);
+
+      // If tintColor is provided, draw the tint over the blurred content
+      if (edge.tintColor != null) {
+        final tintPaint = Paint()
+          ..color = edge.tintColor!
+          ..blendMode = BlendMode.srcOver;
+        canvas.drawRect(rect, tintPaint);
+      }
+
+      // Apply gradient mask directly
+      canvas.drawRect(rect, gradientPaint);
+
+      // Restore the canvas to remove the clipRect
       canvas.restore();
     }
   }
